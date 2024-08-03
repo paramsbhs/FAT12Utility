@@ -7,7 +7,7 @@
 #include <string.h>
 
 
-void list_directory(char* pointer);
+void listDir(char* pointer);
 
 int main(int argc, char *argv[]) {
   if (argc != 2) {
@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
 }
 
 
-void list_directory(char* pointer) {
+void listDir(char* pointer) {
     while (pointer[0] != 0x00) {
         char fileType;
         if ((pointer[11] & 0b00010000) == 0b00010000) {
