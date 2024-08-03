@@ -6,8 +6,8 @@
 #include <unistd.h>
 
 
-void getOSName(const char* disk_image, char* pointer);
-void getlabel(const char* disk_image, char* pointer);
+void getOSName(char* disk_image, char* pointer);
+void getlabel(char* disk_image, char* pointer);
 int getDiskSize(char *pointer);
 int getFreeSize(int disksize, char* pointer);
 int rootfiles(char* pointer);
@@ -53,16 +53,16 @@ int main(int argc, char* argv[]) {
 }
 
 
-void getOSName(const char* disk_image, char* pointer) {
+void getOSName(char* oslabel, char* pointer) {
     for(int i = 0; i < 8; i++){
-        disk_image[i] = pointer[i+3];
+        oslabel[i] = pointer[i+3];
     }
 }
 
-void getlabel(const char* disk_image, char* pointer) {
+void getlabel(char* diskLabel, char* pointer) {
     int i;
 	for (i = 0; i < 8; i++) {
-		diskLabel[i] = p[i+43];
+		diskLabel[i] = pointer[i+43];
 	}
 
 	if (diskLabel[0] == ' ') {
