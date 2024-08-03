@@ -6,16 +6,16 @@
 #include <unistd.h>
 
 
-void getOSName(const char *disk_image);
-void getlabel(const char *disk_image);
-int getDiskSize(char *disk_image);
-int getFreeSize(int disksize, char *disk_image);
-int rootfiles(char *disk_image);
-int getNumFatCopies(char *disk_image);
-int getSectorsPerFat(char *disk_image);
-void printAllInfo(char *disk_image, char *diskLabel, int diskSize, int freeSize, int numberOfRootFiles, int numberOfFatCopies, int sectorsPerFat);
+void getOSName(const char* disk_image, char* pointer);
+void getlabel(const char* disk_image, char* pointer);
+int getDiskSize(char *pointer);
+int getFreeSize(int disksize, char* pointer);
+int rootfiles(char* pointer);
+int getNumFatCopies(char* pointer);
+int getSectorsPerFat(char* pointer);
+void printAllInfo(char* disk_image, char *diskLabel, int diskSize, int freeSize, int numberOfRootFiles, int numberOfFatCopies, int sectorsPerFat);
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
     if (argc != 2) {
         fprintf(stderr, "Usage: %s <disk image>\n", argv[0]);
         exit(1);
@@ -59,7 +59,7 @@ void getOSName(const char* disk_image, char* pointer) {
     }
 }
 
-void getlabel(const char* disk_image char* pointer) {
+void getlabel(const char* disk_image, char* pointer) {
     int i;
 	for (i = 0; i < 8; i++) {
 		diskLabel[i] = p[i+43];
