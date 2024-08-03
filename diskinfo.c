@@ -122,6 +122,10 @@ int getNumFatCopies(char* pointer) {
     return pointer[16];
 }
 
+int getSectorsPerFat(char* pointer) {
+    return pointer[22] + (pointer[23] << 8);
+}
+
 void printAllInfo(char* disk_image, char* diskLabel, int diskSize, int freeSize, int numberOfRootFiles, int numberOfFatCopies, int sectorsPerFat) {
 	printf("OS Name: %s\n", disk_image);
 	printf("Label of the disk: %s\n", diskLabel);
