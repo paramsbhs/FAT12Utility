@@ -8,6 +8,11 @@
 
 void getOSName(const char *disk_image);
 void getlabel(const char *disk_image);
+int getDiskSize(char *disk_image);
+int getFreeSize(int disksize, char *disk_image);
+int rootfiles(char *disk_image);
+int getNumFatCopies(char *disk_image);
+int getSectorsPerFat(char *disk_image);
 void printAllInfo(char *disk_image, char *diskLabel, int diskSize, int freeSize, int numberOfRootFiles, int numberOfFatCopies, int sectorsPerFat);
 
 int main(int argc, char *argv[]) {
@@ -23,7 +28,7 @@ int main(int argc, char *argv[]) {
 	}
 	struct stat buffer;
 	fstat(diskimg, &buffer);
-	char* pointer = mmap(NULL, buf.st_size, PROT_READ, MAP_SHARED, diskimg, 0); //taken from Tutorial
+	char* pointer = mmap(NULL, buffer.st_size, PROT_READ, MAP_SHARED, diskimg, 0); //taken from Tutorial
 	if (pointer == MAP_FAILED) {
 		printf("Error: failed to map memory\n");
 		exit(1);
@@ -74,8 +79,8 @@ void getlabel(const char* disk_image char* pointer) {
 }
 
 int getDiskSize(char* pointer) {
-	int sectorbytes = p[11] + (p[12] << 8);
-	int total = p[19] + (p[20] << 8);
+	int sectorbytes = pointer[11] + (pointer[12] << 8);
+	int total = pointer[19] + (pointer[20] << 8);
 	return sectorbytes * total;
 }
 
@@ -85,13 +90,13 @@ int getFreeSize(int disksize, char* pointer) {
     for (int i = 2; i < (disksize/size); i++) {
         int first,second;
         int value;
-        if((n%2)==0){
-            first = pointer[SECTOR_SIZE + (3*n/2) + 1] & 0x0F;
-            second = pointer[SECTOR_SIZE + (3*n/2)] & 0xFF;
+        if((i%2)==0){
+            first = pointer[SECTOR_SIZE + (3*i/2) + 1] & 0x0F;
+            second = pointer[SECTOR_SIZE + (3*i/2)] & 0xFF;
             value = (first << 8) + second;
         }else{
-            first = pointer[SECTOR_SIZE + (3*n/2)] & 0xF0;
-            second = pointer[SECTOR_SIZE + (3*n/2) + 1] & 0xFF;
+            first = pointer[SECTOR_SIZE + (3*i/2)] & 0xF0;
+            second = pointer[SECTOR_SIZE + (3*i/2) + 1] & 0xFF;
             value = (first >> 4) + (second << 4);
         }
         if(value == 0x00) {
