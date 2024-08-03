@@ -40,7 +40,7 @@ int main(int argc, char* argv[]) {
     getlabel(disklabel, pointer);
     int disksize = getDiskSize(pointer);
     int freesize = getFreeSize(disksize, pointer);
-    int rootFiles = getNumRootFiles(pointer);
+    int rootFiles = rootfiles(pointer);
     int fatCopies = getNumFatCopies(pointer);
     int sectors = getSectorsPerFat(pointer);
     printAllInfo(oslabel, disklabel, disksize, freesize, rootFiles, fatCopies, sectors);
@@ -66,7 +66,7 @@ void getlabel(char* diskLabel, char* pointer) {
 	}
 
 	if (diskLabel[0] == ' ') {
-		pointer += SECTOR_SIZE * 19;
+		pointer += 512 * 19;
 		while (pointer[0] != 0x00) {
 			if (pointer[11] == 8) {
 				for (i = 0; i < 8; i++) {
@@ -86,17 +86,17 @@ int getDiskSize(char* pointer) {
 
 int getFreeSize(int disksize, char* pointer) {
     int total = 0;
-    int size = SECTOR_SIZE;
+    int size = 512;
     for (int i = 2; i < (disksize/size); i++) {
         int first,second;
         int value;
         if((i%2)==0){
-            first = pointer[SECTOR_SIZE + (3*i/2) + 1] & 0x0F;
-            second = pointer[SECTOR_SIZE + (3*i/2)] & 0xFF;
+            first = pointer[512 + (3*i/2) + 1] & 0x0F;
+            second = pointer[512 + (3*i/2)] & 0xFF;
             value = (first << 8) + second;
         }else{
-            first = pointer[SECTOR_SIZE + (3*i/2)] & 0xF0;
-            second = pointer[SECTOR_SIZE + (3*i/2) + 1] & 0xFF;
+            first = pointer[512 + (3*i/2)] & 0xF0;
+            second = pointer[512 + (3*i/2) + 1] & 0xFF;
             value = (first >> 4) + (second << 4);
         }
         if(value == 0x00) {
@@ -107,7 +107,7 @@ int getFreeSize(int disksize, char* pointer) {
 }
 
 int rootfiles(char* pointer){
-    pointer += SECTOR_SIZE *19;
+    pointer += 512 * 19;
     int total = 0;
     while(pointer[0] != 0x00){
         if(pointer[11] == 0x08 || pointer[11] == 0x10){
