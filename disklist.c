@@ -4,6 +4,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <string.h>
 
 
 void list_directory(char* pointer);
@@ -27,7 +28,7 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 
-    listDir(pointer + SECTOR_SIXE *19); 
+    listDir(pointer + 512 *19); 
     munmap(pointer, buffer.st_size);
 	close(diskimg);
 
