@@ -1,19 +1,12 @@
-CC = gcc
-CFLAGS = -Wall -Wextra -std=c99
+.phony all:
+all: sfs
 
-all: diskinfo disklist diskget diskput
+sfs:
+	gcc -Wall diskinfo.c -o diskinfo
+	gcc -Wall disklist.c -o disklist
+	gcc -Wall diskget.c -o diskget
+	gcc -Wall diskput.c -o diskput
 
-diskinfo: diskinfo.c
-    $(CC) $(CFLAGS) -o diskinfo diskinfo.c
-
-disklist: disklist.c
-    $(CC) $(CFLAGS) -o disklist disklist.c
-
-diskget: diskget.c
-    $(CC) $(CFLAGS) -o diskget diskget.c
-
-diskput: diskput.c
-    $(CC) $(CFLAGS) -o diskput diskput.c
-
+.PHONY clean:
 clean:
-    rm -f diskinfo disklist diskget diskput
+	-rm -rf *.o *.exe
