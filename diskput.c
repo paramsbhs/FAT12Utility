@@ -29,9 +29,6 @@ int main(int argc, char *argv[]) {
     }
     const char *disk_image = argv[1];
     const char *file_path = argv[2];
-    const char *dest_dir = (argc == 4) ? argv[3] : "/";
-
-    put_file(disk_image, file_path, dest_dir);
 
     return 0;
 }
