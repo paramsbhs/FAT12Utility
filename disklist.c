@@ -6,6 +6,43 @@
 #include <unistd.h>
 #include <string.h>
 
+/*
+    This function calculates the total size of the disk in bytes.
+    The disk size is calculated by multiplying the sector size (bytes per sector) by the total number of sectors.
+*/
+int getDiskSize(char* pointer) {
+    int sectorBytes = pointer[11] + (pointer[12] << 8);
+    int totalSectors = pointer[19] + (pointer[20] << 8);
+    return sectorBytes * totalSectors;
+}
+/*
+    This function calculates the free size of the disk in bytes.
+    The free size is calculated by counting the number of free sectors in the FAT and multiplying by the sector size.
+*/
+int getFreeSize(int diskSize, char* pointer) {
+    int totalFreeSectors = 0;
+    int sectorSize = 512;
+
+    for (int i = 2; i < (diskSize / sectorSize); i++) {
+        int firstByte, secondByte, value;
+
+        if ((i % 2) == 0) {
+            firstByte = pointer[512 + (3 * i / 2) + 1] & 0x0F;
+            secondByte = pointer[512 + (3 * i / 2)] & 0xFF;
+            value = (firstByte << 8) + secondByte;
+        } else {
+            firstByte = pointer[512 + (3 * i / 2)] & 0xF0;
+            secondByte = pointer[512 + (3 * i / 2) + 1] & 0xFF;
+            value = (firstByte >> 4) + (secondByte << 4);
+        }
+
+        if (value == 0x00) {
+            totalFreeSectors++;
+        }
+    }
+
+    return sectorSize * totalFreeSectors;
+}
 
 void listDir(char* pointer);
 
@@ -37,56 +74,57 @@ int main(int argc, char *argv[]) {
 
 
 void listDir(char* pointer) {
-    // while (pointer[0] != 0x00) {
-    //     char fileType;
-    //     if ((pointer[11] & 0b00010000) == 0b00010000) {
-    //         fileType = 'D';
-    //     } else {
-    //         fileType = 'F';
-    //     }
+    while (pointer[0] != 0x00) {
+        char type;
+        if ((pointer[11] & 0b00010000) == 0b00010000) {
+            type = 'D';
+        } else {
+            type = 'F';
+        }
 
-    //     // Allocate memory for file name and extension
-    //     char* fileName = malloc(9); // 8 characters + null terminator
-    //     char* fileExtension = malloc(4); // 3 characters + null terminator
+        // Allocate memory for file name and extension
+        char* file = malloc(9); // 8 characters + null terminator
+        char* extension = malloc(4); // 3 characters + null terminator
 
-    //     // Copy file name
-    //     int i;
-    //     for (i = 0; i < 8; i++) {
-    //         if (pointer[i] == ' ') break;
-    //         fileName[i] = pointer[i];
-    //     }
-    //     fileName[i] = '\0'; // Null-terminate the string
+        // Copy file name
+        int i = 0;
+        while(i < 8){
+            if (pointer[i] == ' ') break;
+            file[i] = pointer[i];
+            i++;
+        }
+        file[i] = '\0'; // Null-terminate the string
 
-    //     // Copy file extension
-    //     for (i = 0; i < 3; i++) {
-    //         fileExtension[i] = pointer[i + 8];
-    //     }
-    //     fileExtension[3] = '\0'; // Null-terminate the string
+        // Copy file extension
+        for (i = 0; i < 3; i++) {
+            extension[i] = pointer[i + 8];
+        }
+        extension[3] = '\0'; // Null-terminate the string
 
-    //     // Concatenate file name and extension
-    //     strcat(fileName, ".");
-    //     strcat(fileName, fileExtension);
+        // Concatenate file name and extension
+        strcat(file, ".");
+        strcat(file, extension);
 
-    //     //int fileSize = getFileSize(fileName, pointer);
+        int size = (getDiskSize(pointer)+getFreeSize(getDiskSize(pointer),pointer));
 
-    //     // Extract date and time information
-    //     int year = ((pointer[17] & 0b11111110) >> 1) + 1980;
-    //     int month = ((pointer[16] & 0b11100000) >> 5) + ((pointer[17] & 0b00000001) << 3);
-    //     int day = pointer[16] & 0b00011111;
-    //     int hour = (pointer[15] & 0b11111000) >> 3;
-    //     int minute = ((pointer[14] & 0b11100000) >> 5) + ((pointer[15] & 0b00000111) << 3);
+        // Extract date and time information
+        int year = ((pointer[17] & 0b11111110) >> 1) + 1980;
+        int month = ((pointer[16] & 0b11100000) >> 5) + ((pointer[17] & 0b00000001) << 3);
+        int day = pointer[16] & 0b00011111;
+        int hour = (pointer[15] & 0b11111000) >> 3;
+        int minute = ((pointer[14] & 0b11100000) >> 5) + ((pointer[15] & 0b00000111) << 3);
 
-    //     // Check if file is not hidden and not system file
-    //     if (!(pointer[11] & 0b00000010) && !(pointer[11] & 0b00001000)) {
-    //         printf("%c %10d %20s %d-%02d-%02d %02d:%02d\n",
-    //                fileType, fileSize, fileName, year, month, day, hour, minute);
-    //     }
+        // Check if file is not hidden and not system file
+        if (!(pointer[11] & 0b00000010) && !(pointer[11] & 0b00001000)) {
+            printf("%c %10d %20s %d-%02d-%02d %02d:%02d\n",
+                   type, size, file, year, month, day, hour, minute);
+        }
 
-    //     // Free allocated memory
-    //     free(fileName);
-    //     free(fileExtension);
+        // Free allocated memory
+        free(file);
+        free(extension);
 
-    //     // Move to the next entry
-    //     pointer += 32;
-    //}
+        // Move to the next entry
+        pointer += 32;
+    }
 }

@@ -18,7 +18,7 @@ void printAllInfo(char* osLabel, char* diskLabel, int diskSize, int freeSize, in
     * This program reads a disk image and prints out the following information:
     * 1. OS Name
     * 2. Label of the disk
-    * 3. Total size of the disk
+    * 3. size of the disk
     * 4. Free size of the disk
     * 5. Number of files in the root directory (including hidden files)
     * 6. Number of FAT copies
