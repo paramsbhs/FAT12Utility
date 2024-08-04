@@ -37,56 +37,56 @@ int main(int argc, char *argv[]) {
 
 
 void listDir(char* pointer) {
-    while (pointer[0] != 0x00) {
-        char fileType;
-        if ((pointer[11] & 0b00010000) == 0b00010000) {
-            fileType = 'D';
-        } else {
-            fileType = 'F';
-        }
+    // while (pointer[0] != 0x00) {
+    //     char fileType;
+    //     if ((pointer[11] & 0b00010000) == 0b00010000) {
+    //         fileType = 'D';
+    //     } else {
+    //         fileType = 'F';
+    //     }
 
-        // Allocate memory for file name and extension
-        char* fileName = malloc(9); // 8 characters + null terminator
-        char* fileExtension = malloc(4); // 3 characters + null terminator
+    //     // Allocate memory for file name and extension
+    //     char* fileName = malloc(9); // 8 characters + null terminator
+    //     char* fileExtension = malloc(4); // 3 characters + null terminator
 
-        // Copy file name
-        int i;
-        for (i = 0; i < 8; i++) {
-            if (pointer[i] == ' ') break;
-            fileName[i] = pointer[i];
-        }
-        fileName[i] = '\0'; // Null-terminate the string
+    //     // Copy file name
+    //     int i;
+    //     for (i = 0; i < 8; i++) {
+    //         if (pointer[i] == ' ') break;
+    //         fileName[i] = pointer[i];
+    //     }
+    //     fileName[i] = '\0'; // Null-terminate the string
 
-        // Copy file extension
-        for (i = 0; i < 3; i++) {
-            fileExtension[i] = pointer[i + 8];
-        }
-        fileExtension[3] = '\0'; // Null-terminate the string
+    //     // Copy file extension
+    //     for (i = 0; i < 3; i++) {
+    //         fileExtension[i] = pointer[i + 8];
+    //     }
+    //     fileExtension[3] = '\0'; // Null-terminate the string
 
-        // Concatenate file name and extension
-        strcat(fileName, ".");
-        strcat(fileName, fileExtension);
+    //     // Concatenate file name and extension
+    //     strcat(fileName, ".");
+    //     strcat(fileName, fileExtension);
 
-        int fileSize = getFileSize(fileName, pointer);
+    //     //int fileSize = getFileSize(fileName, pointer);
 
-        // Extract date and time information
-        int year = ((pointer[17] & 0b11111110) >> 1) + 1980;
-        int month = ((pointer[16] & 0b11100000) >> 5) + ((pointer[17] & 0b00000001) << 3);
-        int day = pointer[16] & 0b00011111;
-        int hour = (pointer[15] & 0b11111000) >> 3;
-        int minute = ((pointer[14] & 0b11100000) >> 5) + ((pointer[15] & 0b00000111) << 3);
+    //     // Extract date and time information
+    //     int year = ((pointer[17] & 0b11111110) >> 1) + 1980;
+    //     int month = ((pointer[16] & 0b11100000) >> 5) + ((pointer[17] & 0b00000001) << 3);
+    //     int day = pointer[16] & 0b00011111;
+    //     int hour = (pointer[15] & 0b11111000) >> 3;
+    //     int minute = ((pointer[14] & 0b11100000) >> 5) + ((pointer[15] & 0b00000111) << 3);
 
-        // Check if file is not hidden and not system file
-        if (!(pointer[11] & 0b00000010) && !(pointer[11] & 0b00001000)) {
-            printf("%c %10d %20s %d-%02d-%02d %02d:%02d\n",
-                   fileType, fileSize, fileName, year, month, day, hour, minute);
-        }
+    //     // Check if file is not hidden and not system file
+    //     if (!(pointer[11] & 0b00000010) && !(pointer[11] & 0b00001000)) {
+    //         printf("%c %10d %20s %d-%02d-%02d %02d:%02d\n",
+    //                fileType, fileSize, fileName, year, month, day, hour, minute);
+    //     }
 
-        // Free allocated memory
-        free(fileName);
-        free(fileExtension);
+    //     // Free allocated memory
+    //     free(fileName);
+    //     free(fileExtension);
 
-        // Move to the next entry
-        pointer += 32;
+    //     // Move to the next entry
+    //     pointer += 32;
     }
 }
