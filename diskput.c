@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-void put_file(const char *disk_image, const char *file_path);
+void put_file(const char *disk_image, const char *file_path, const char *dest_dir);
 
 int main(int argc, char *argv[]) {
     if (argc != 3 && argc != 4) {
