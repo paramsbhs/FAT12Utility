@@ -88,5 +88,5 @@ void listDir(char* pointer) {
 
     //     // Move to the next entry
     //     pointer += 32;
-    }
+    //}
 }
