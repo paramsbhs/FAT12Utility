@@ -105,9 +105,9 @@ void listDir(char* pointer) {
         strcat(file, ".");
         strcat(file, extension);
 
-        int size = (getDiskSize(pointer)+getFreeSize(getDiskSize(pointer),pointer));
+        int size = (getDiskSize(pointer)+getFreeSize(getDiskSize(pointer),pointer)); //size of the file
 
-        // Extract date and time information
+        // Extract date and time information (Tutorial)
         int year = ((pointer[17] & 0b11111110) >> 1) + 1980;
         int month = ((pointer[16] & 0b11100000) >> 5) + ((pointer[17] & 0b00000001) << 3);
         int day = pointer[16] & 0b00011111;
@@ -116,8 +116,9 @@ void listDir(char* pointer) {
 
         // Check if file is not hidden and not system file
         if (!(pointer[11] & 0b00000010) && !(pointer[11] & 0b00001000)) {
-            printf("%c %15d %30s %d-%02d-%02d %02d:%02d\n",
+            printf("%c %10d %20s %d-%02d-%02d %02d:%02d\n",
                    type, size, file, year, month, day, hour, minute);
+            printf("==================\n");
         }
 
         // Free allocated memory
