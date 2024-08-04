@@ -27,8 +27,6 @@ int main(int argc, char *argv[]) {
         printf("Error: failed to map memory\n");
         exit(1);
     }
-    const char *disk_image = argv[1];
-    const char *file_path = argv[2];
 
     return 0;
 }

@@ -95,7 +95,6 @@ void getANSfile(char* pointer, char* pointer2, char* name) {
     	while (pointer[0] != 0x00) {
 		if ((pointer[11] & 0b00000010) == 0 && (pointer[11] & 0b00001000) == 0) {
 			char* curName = malloc(sizeof(char));
-			char* curextension = malloc(sizeof(char));
 			for (int i = 0; i < 8; i++) {
 				if (pointer[i] == ' ') {
 					break;
