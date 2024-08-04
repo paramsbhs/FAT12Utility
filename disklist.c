@@ -116,7 +116,7 @@ void listDir(char* pointer) {
 
         // Check if file is not hidden and not system file
         if (!(pointer[11] & 0b00000010) && !(pointer[11] & 0b00001000)) {
-            printf("%c %10d %20s %d-%02d-%02d %02d:%02d\n",
+            printf("%c %15d %30s %d-%02d-%02d %02d:%02d\n",
                    type, size, file, year, month, day, hour, minute);
         }
 
